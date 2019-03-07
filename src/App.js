@@ -1,32 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
-import { getGithubUsersList } from "./_actions";
-import { getUsersList } from "./_selectors";
+import { withRouter, Route, Switch } from "react-router-dom";
 
 import "./App.css";
-import Search from "./components/Search";
-import UsersList from "./components/UsersList";
+import ListPage from "./pages/ListPage";
+import DetailsPage from "./pages/DetailsPage";
 
 class App extends Component {
-  doOnSeach = user => {
-    this.props.dispatch(getGithubUsersList(user));
-  };
-
   render() {
-    const { users } = this.props;
     return (
       <div className="App">
-        <header>
-          <h1 className="title">Github user list</h1>
-        </header>
-        <section className="searchSection">
-          <Search doOnSeach={this.doOnSeach} />
-        </section>
-        <section className="listSection">
-          {users && <UsersList users={users} />}
-        </section>
+        <Switch>
+          <Route exact path="/" component={ListPage} />
+          <Route exact path="/:userId/details" component={DetailsPage} />
+        </Switch>
       </div>
     );
   }
@@ -38,7 +26,7 @@ App.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    users: getUsersList(state)
+    state
   };
 };
 
@@ -48,7 +36,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);
