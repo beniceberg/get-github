@@ -5,11 +5,7 @@ const User = ({ userInfo, onUserClick }) => (
   <div className="user" onClick={() => onUserClick(userInfo.login)}>
     <img src={userInfo.avatar_url} alt="avatar" className="userAvatar" />
     <div>
-      <h2 className="userName">
-        <a href={userInfo.html_url} target="_blank" rel="noopener noreferrer">
-          {userInfo.login}
-        </a>
-      </h2>
+      <h2 className="userName">{userInfo.login}</h2>
     </div>
   </div>
 );
@@ -19,17 +15,28 @@ User.propTypes = {
   onUserClick: PropTypes.func
 };
 
-const UsersList = ({ users, onUserClick }) => (
+const UsersList = ({
+  users,
+  onUserClick,
+  onShowMoreClick,
+  showShowMoreButton
+}) => (
   <div className="usersList">
     {users.map(user => (
       <User key={user.id} userInfo={user} onUserClick={onUserClick} />
     ))}
+    {showShowMoreButton && (
+      <button onClick={onShowMoreClick} className="showMoreBtn">
+        Show more
+      </button>
+    )}
   </div>
 );
 
 UsersList.propTypes = {
   users: PropTypes.array,
-  onUserClick: PropTypes.func
+  onUserClick: PropTypes.func,
+  onShowMoreClick: PropTypes.func
 };
 
 export default UsersList;

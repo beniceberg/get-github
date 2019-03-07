@@ -2,14 +2,19 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 class Search extends Component {
-  state = { user: "" };
+  constructor(props) {
+    super(props);
+    this.state = {
+      search: props.searchText
+    };
+  }
 
-  handleChange = event => this.setState({ user: event.target.value });
-  doSeachClick = () => this.props.doOnSeach(this.state.user);
+  handleChange = event => this.setState({ search: event.target.value });
+  doSeachClick = () => this.props.doOnSeach(this.state.search);
   doKeyPress = e => e.key === "Enter" && this.doSeachClick();
 
   render() {
-    const { user } = this.state;
+    const { search } = this.state;
 
     return (
       <div className="search">
@@ -18,14 +23,14 @@ class Search extends Component {
             className="searchInput"
             type="text"
             placeholder="Find user"
-            value={user}
+            value={search}
             onChange={this.handleChange}
             onKeyPress={this.doKeyPress}
           />
           <button
-            className={`searchButton ${!user ? `disabled` : ""}`}
+            className={`searchButton ${!search ? `disabled` : ""}`}
             onClick={this.doSeachClick}
-            disabled={!user}
+            disabled={!search}
           >
             Search Users
           </button>

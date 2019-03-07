@@ -3,8 +3,17 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import { getGithubUsersList, getGithubUserDetails } from "../_actions";
-import { getUsersList } from "../_selectors";
+import {
+  getGithubUsersList,
+  getGithubUserDetails,
+  getNextListPage
+} from "../_actions";
+import {
+  getUsersList,
+  getUserDetails,
+  getSearch,
+  getUsersListSize
+} from "../_selectors";
 
 import Search from "../components/Search";
 import UsersList from "../components/UsersList";
@@ -15,22 +24,34 @@ class ListPage extends Component {
   };
 
   doUserClick = username => {
-    this.props.dispatch(getGithubUserDetails(username));
-    this.props.history.push(`/${username}/details`);
+    const { history } = this.props;
+    history.push(`/${username}/details`);
+  };
+
+  showMore = () => {
+    this.props.dispatch(getNextListPage());
   };
 
   render() {
-    const { users } = this.props;
+    const { users, searchText, usersListSize } = this.props;
+    const showShowMoreButton = users.length < usersListSize;
     return (
-      <div className="ListPage">
+      <div className="listPage">
         <header className="pageHeader">
           <h1 className="title">Github user list</h1>
         </header>
         <section className="searchSection">
-          <Search doOnSeach={this.doOnSeach} />
+          <Search doOnSeach={this.doOnSeach} searchText={searchText} />
         </section>
-        <section className="listSection">
-          {users && <UsersList users={users} onUserClick={this.doUserClick} />}
+        <section className="listSection" onScroll={this.onScroll}>
+          {users && (
+            <UsersList
+              users={users}
+              onUserClick={this.doUserClick}
+              onShowMoreClick={this.showMore}
+              showShowMoreButton={showShowMoreButton}
+            />
+          )}
         </section>
       </div>
     );
@@ -38,12 +59,19 @@ class ListPage extends Component {
 }
 
 ListPage.propTypes = {
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  userDetails: PropTypes.func,
+  users: PropTypes.array,
+  searchText: PropTypes.string,
+  usersListSize: PropTypes.number
 };
 
 const mapStateToProps = state => {
   return {
-    users: getUsersList(state)
+    users: getUsersList(state),
+    userDetails: getUserDetails(state),
+    searchText: getSearch(state),
+    usersListSize: getUsersListSize(state)
   };
 };
 
