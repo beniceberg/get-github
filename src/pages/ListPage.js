@@ -30,11 +30,11 @@ class ListPage extends Component {
     return (
       <div className="listPage">
         <header className="pageHeader">
-          <h1 className="title">Github user list</h1>
+          <h1 className="title">Github Search Users</h1>
         </header>
         <section className="searchSection">
           <Search doOnSeach={this.doOnSeach} searchText={searchText} />
-          {usersListSize && (
+          {Boolean(usersListSize) && (
             <div className="totalResults">
               <p>
                 <span>{`We have found ${usersListSize} users for `}</span>
