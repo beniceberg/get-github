@@ -3,20 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import {
-  getGithubUsersList,
-  getGithubUserDetails,
-  getNextListPage
-} from "../_actions";
-import {
-  getUsersList,
-  getUserDetails,
-  getSearch,
-  getUsersListSize
-} from "../_selectors";
+import { getGithubUsersList, getNextListPage } from "../_actions";
+import { getUsersList, getSearch, getUsersListSize } from "../_selectors";
 
 import Search from "../components/Search";
 import UsersList from "../components/UsersList";
+import NoSearchResults from "../components/NoSearchResults";
 
 class ListPage extends Component {
   doOnSeach = user => {
@@ -42,9 +34,17 @@ class ListPage extends Component {
         </header>
         <section className="searchSection">
           <Search doOnSeach={this.doOnSeach} searchText={searchText} />
+          {usersListSize && (
+            <div className="totalResults">
+              <p>
+                <span>{`We have found ${usersListSize} users for `}</span>
+                <span className="bold">{`"${searchText}"`}</span>
+              </p>
+            </div>
+          )}
         </section>
         <section className="listSection" onScroll={this.onScroll}>
-          {users && (
+          {Boolean(users.length) && (
             <UsersList
               users={users}
               onUserClick={this.doUserClick}
@@ -52,6 +52,7 @@ class ListPage extends Component {
               showShowMoreButton={showShowMoreButton}
             />
           )}
+          {usersListSize === 0 && <NoSearchResults searchText={searchText} />}
         </section>
       </div>
     );
@@ -60,7 +61,6 @@ class ListPage extends Component {
 
 ListPage.propTypes = {
   dispatch: PropTypes.func,
-  userDetails: PropTypes.func,
   users: PropTypes.array,
   searchText: PropTypes.string,
   usersListSize: PropTypes.number
@@ -69,7 +69,6 @@ ListPage.propTypes = {
 const mapStateToProps = state => {
   return {
     users: getUsersList(state),
-    userDetails: getUserDetails(state),
     searchText: getSearch(state),
     usersListSize: getUsersListSize(state)
   };

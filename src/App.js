@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { withRouter, Route, Switch } from "react-router-dom";
+import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import "./App.css";
 import ListPage from "./pages/ListPage";
 import DetailsPage from "./pages/DetailsPage";
+import ErrorPage from "./pages/ErrorPage";
 
 class App extends Component {
   render() {
@@ -14,6 +15,8 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={ListPage} />
           <Route exact path="/:username/details" component={DetailsPage} />
+          <Route path="/error" component={ErrorPage} />
+          <Redirect from="/*" to="/error" />
         </Switch>
       </div>
     );

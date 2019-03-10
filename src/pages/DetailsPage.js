@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
+import _isEmpty from "lodash/isEmpty";
 import { getUserDetails } from "../_selectors";
 import { getGithubUserDetails } from "../_actions";
 import LabelField from "../components/LabelField";
@@ -23,7 +24,6 @@ class DetailsPage extends Component {
     const {
       avatar_url,
       login,
-      repos_url,
       html_url,
       name,
       company,
@@ -33,44 +33,48 @@ class DetailsPage extends Component {
       created_at
     } = userDetails;
     return (
-      <div className="DetailsPage">
-        <header className="pageHeader">
-          <button onClick={this.doBackClick}>Back to List</button>
-          <h1 className="title">User Details</h1>
-        </header>
-        <section className="userDetailsSection">
-          {userDetails && (
+      !_isEmpty(userDetails) && (
+        <div className="detailsPage">
+          <header className="pageHeader">
+            <h1 className="title">User Details</h1>
+          </header>
+          <button onClick={this.doBackClick} className="backBtn">
+            Back to List
+          </button>
+          <section className="userDetailsSection">
             <div className="userDetails">
-              <h2 className="usernameTitle">
-                <a href={html_url} target="_blank" rel="noopener noreferrer">
-                  {login}
-                </a>
-              </h2>
               <img
                 src={avatar_url}
                 alt="avatar"
                 className="userDetailsAvatar"
               />
-              {name && <LabelField label="Name" info={name} />}
-              <LabelField label="Username" info={login} />
-              {company && <LabelField label="Company" info={company} />}
-              {location && <LabelField label="Located" info={location} />}
-              <LabelField
-                label="Member Since"
-                info={moment(created_at).format("MMMM Do YYYY")}
-              />
-              <LabelField label="Followers" info={followers} />
-              <LabelField label="Following" info={following} />
+              <div className="detailsInfo">
+                <h2 className="usernameTitle">
+                  <a href={html_url} target="_blank" rel="noopener noreferrer">
+                    {login}
+                  </a>
+                </h2>
+                <LabelField label="Name" info={name} />
+                <LabelField label="Username" info={login} />
+                <LabelField label="Company" info={company} />
+                <LabelField label="Located" info={location} />
+                <LabelField
+                  label="Member Since"
+                  info={moment(created_at).format("MMMM Do YYYY")}
+                />
+                <LabelField label="Followers" info={followers} />
+                <LabelField label="Following" info={following} />
+              </div>
             </div>
-          )}
-        </section>
-      </div>
+          </section>
+        </div>
+      )
     );
   }
 }
 
 DetailsPage.propTypes = {
-  dispatch: PropTypes.object
+  dispatch: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {

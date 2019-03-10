@@ -26,9 +26,11 @@ const UsersList = ({
       <User key={user.id} userInfo={user} onUserClick={onUserClick} />
     ))}
     {showShowMoreButton && (
-      <button onClick={onShowMoreClick} className="showMoreBtn">
-        Show more
-      </button>
+      <div className="showMorebtnContainer">
+        <button onClick={onShowMoreClick} className="showMoreBtn">
+          Show more
+        </button>
+      </div>
     )}
   </div>
 );

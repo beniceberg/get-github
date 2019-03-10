@@ -28,11 +28,11 @@ class Search extends Component {
             onKeyPress={this.doKeyPress}
           />
           <button
-            className={`searchButton ${!search ? `disabled` : ""}`}
+            className={`searchBtn ${!search ? `disabled` : ""}`}
             onClick={this.doSeachClick}
             disabled={!search}
           >
-            Search Users
+            Search
           </button>
         </div>
       </div>

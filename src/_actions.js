@@ -1,3 +1,5 @@
+import history from "./_utils";
+
 export const SET_USERS_LIST = "SET_USERS_LIST";
 export const SET_USER_DETAILS = "SET_USER_DETAILS";
 export const SET_LIST_SIZE = "SET_LIST_SIZE";
@@ -5,6 +7,7 @@ export const UPDATE_USERS_LIST = "UPDATE_USERS_LIST";
 export const RESET_USERS_LIST_PAGE = "RESET_USERS_LIST_PAGE";
 export const INCREMENT_LIST_PAGE = "INCREMENT_LIST_PAGE";
 export const SET_SEARCH = "SET_SEARCH";
+export const SET_ERROR = "SET_ERROR";
 
 const setSearch = search => ({
   type: SET_SEARCH,
@@ -52,8 +55,16 @@ export const getGithubUsersList = search => (dispatch, getState) => {
 export const getGithubUserDetails = username => (dispatch, getState) => {
   const url = `https://api.github.com/users/${username}`;
   fetch(url)
-    .then(resp => resp.json())
-    .then(userDetails => dispatch(setUserDetails(userDetails)))
+    .then(resp =>
+      resp.json().then(data => Object.assign(data, { status: resp.status }))
+    )
+    .then(body => {
+      if (body.status === 404) {
+        history.push("/error");
+      } else {
+        dispatch(setUserDetails(body));
+      }
+    })
     .catch(error => {
       console.log(error);
     });
